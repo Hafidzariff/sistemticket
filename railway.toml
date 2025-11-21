@@ -1,5 +1,11 @@
-[build]
-builder = "NIXPACKS"
+[phases.setup]
+nixPkgs = ["php81", "php81Extensions.curl", "php81Extensions.mbstring", "php81Extensions.pdo_mysql", "php81Extensions.bcmath", "php81Extensions.gd", "php81Extensions.zip", "composer"]
 
-[deploy]
-startCommand = "php artisan serve --host 0.0.0.0 --port ${PORT}"
+[phases.install]
+cmds = ["composer install --no-dev --optimize-autoloader"]
+
+[phases.build]
+cmds = ["php artisan config:cache", "php artisan route:cache"]
+
+[start]
+cmd = "php artisan serve --host 0.0.0.0 --port ${PORT}"
