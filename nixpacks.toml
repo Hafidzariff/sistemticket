@@ -5,7 +5,8 @@ nixPkgs = ["php81", "php81Extensions.curl", "php81Extensions.mbstring", "php81Ex
 cmds = ["composer install --no-dev --optimize-autoloader"]
 
 [phases.build]
-cmds = ["php artisan config:cache", "php artisan route:cache"]
-
-[start]
-cmd = "php artisan serve --host=0.0.0.0 --port=$PORT"
+cmds = [
+  "php artisan config:cache",
+  "php artisan route:cache",
+  "php artisan view:cache"
+]
