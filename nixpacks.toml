@@ -1,18 +1,11 @@
-[phases.setup]
-nixPkgs = [
-  "php82",
-  "php82Packages.composer",
-  "php82Extensions.gd",
-  "php82Extensions.mbstring",
-  "php82Extensions.pdo_mysql",
-  "php82Extensions.zip",
-  "php82Extensions.fileinfo"
-]
+[variables]
+    NODE_ENV = "production"
+
+[setup]
+    pkgs = ["php82", "php82Packages.composer", "nodejs", "php82Extensions.gd", "php82Extensions.mbstring", "php82Extensions.pdo_mysql", "php82Extensions.zip", "php82Extensions.fileinfo"]
 
 [phases.install]
-cmds = [
-  "composer install --no-dev --optimize-autoloader --ignore-platform-reqs"
-]
+    cmds = ["composer install --no-dev --optimize-autoloader --ignore-platform-reqs", "npm install"]
 
-[phases.start]
-cmd = "php artisan serve --host=0.0.0.0 --port=$PORT"
+[phases.build]
+    cmds = ["npm run prod"]
