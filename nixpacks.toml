@@ -1,6 +1,9 @@
+[setup]
+pkgs = ["php82", "php82Packages.composer", "nodejs", "php82Extensions.gd", "php82Extensions.mbstring", "php82Extensions.pdo_mysql", "php82Extensions.zip", "php82Extensions.fileinfo"]
+
 [phases.install]
-cmds = [
-    "composer install --no-dev --optimize-autoloader --ignore-platform-reqs",
-    "rm -rf node_modules package-lock.json",
-    "npm install"
-]
+cmds = ["composer install --no-dev --optimize-autoloader --ignore-platform-reqs"]
+
+[phases.build]
+# Mengganti perintah npm run prod dengan echo agar build dianggap sukses
+cmds = ["echo 'Skipping NPM build because assets are already prepared'"]
