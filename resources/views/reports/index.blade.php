@@ -45,13 +45,15 @@
     <input type="hidden" name="status" value="{{ request('status') }}">
 
     <div class="col-md-3">
-        <label class="small">Dari tanggal</label>
-        <input type="date" name="from" value="{{ request('from') }}" class="form-control form-control-sm">
+        <label class="small text-white">Dari tanggal</label>
+        <input type="date" name="from" value="{{ request('from') }}"
+               class="form-control form-control-sm text-white bg-dark border-secondary">
     </div>
 
     <div class="col-md-3">
-        <label class="small">Sampai tanggal</label>
-        <input type="date" name="to" value="{{ request('to') }}" class="form-control form-control-sm">
+        <label class="small text-white">Sampai tanggal</label>
+        <input type="date" name="to" value="{{ request('to') }}"
+               class="form-control form-control-sm text-white bg-dark border-secondary">
     </div>
 
     <div class="col-md-3 d-flex align-items-end">
@@ -60,19 +62,22 @@
     </div>
 </form>
 
-{{-- EXPORT --}}
 <a href="{{ route('reports.export', [
-        'from' => request('from'),
-        'to' => request('to'),
-        'status' => request('status')
-    ]) }}" class="btn btn-warning btn-sm mb-3">
+    'from' => request('from'),
+    'to' => request('to'),
+    'status' => request('status'),
+    'search' => request('search')
+]) }}" 
+class="btn btn-warning btn-sm mb-3">
     📥 Export Excel
 </a>
 
-{{-- SEARCH BAR (TAMBAHKAN DI SINI) --}}
+
+{{-- SEARCH --}}
 <form method="GET" action="{{ route('reports.index') }}" class="input-group mb-3" style="max-width: 350px;">
     <input type="text" name="search" value="{{ request('search') }}"
-           class="form-control form-control-sm" placeholder="🔍 Cari laporan...">
+           class="form-control form-control-sm text-white bg-dark border-secondary"
+           placeholder="🔍 Cari laporan...">
     <button class="btn btn-primary btn-sm" type="submit">Cari</button>
 
     <input type="hidden" name="status" value="{{ request('status') }}">
@@ -86,7 +91,7 @@
 
 {{-- LIST LAPORAN --}}
 @forelse($reports as $report)
-<div class="card shadow-sm mb-3" style="border-radius: 10px;">
+<div class="card shadow-sm mb-3 bg-dark text-white" style="border-radius: 10px;">
     <div class="card-body">
 
         <div class="d-flex justify-content-between">
@@ -106,7 +111,8 @@
                     <span class="badge bg-success">Selesai</span>
                 @endif
 
-                <br><small class="text-muted">Tanggal: {{ $report->tanggal_laporan }}</small>
+                {{-- TANGGAL → PUTIH --}}
+                <br><small class="text-white">Tanggal: {{ $report->tanggal_laporan }}</small>
 
                 {{-- FOTO --}}
                 @if($report->foto)
@@ -134,38 +140,53 @@
         </div>
 
         {{-- UPDATE FORM --}}
-        <form action="{{ route('reports.update', $report->id) }}" method="POST" class="mt-3">
-            @csrf
-            @method('PUT')
+       <form action="{{ route('reports.update', $report->id) }}" method="POST" class="mt-3">
+    @csrf
+    @method('PUT')
 
-            <div class="row g-2">
-                <div class="col-md-3">
-                    <select name="status" class="form-select form-select-sm">
-                        <option {{ $report->status=='Baru' ? 'selected' : '' }}>Baru</option>
-                        <option {{ $report->status=='Sedang Dikerjakan' ? 'selected' : '' }}>Sedang Dikerjakan</option>
-                        <option {{ $report->status=='Selesai' ? 'selected' : '' }}>Selesai</option>
-                    </select>
-                </div>
+    <div class="row g-2 align-items-end">
 
-                <div class="col-md-7">
-                    <textarea name="catatan_teknisi" rows="1" class="form-control form-control-sm"
-                              placeholder="Catatan teknisi">{{ $report->catatan_teknisi }}</textarea>
-                </div>
+        {{-- STATUS --}}
+        <div class="col-md-2">
+            <label class="small">Status</label>
+            <select name="status" class="form-select form-select-sm">
+                <option {{ $report->status=='Baru' ? 'selected' : '' }}>Baru</option>
+                <option {{ $report->status=='Sedang Dikerjakan' ? 'selected' : '' }}>Sedang Dikerjakan</option>
+                <option {{ $report->status=='Selesai' ? 'selected' : '' }}>Selesai</option>
+            </select>
+        </div>
 
-                <div class="col-md-2">
-                    <button class="btn btn-success btn-sm w-100">Update</button>
-                </div>
-            </div>
-        </form>
+        {{-- TANGGAL LAPORAN --}}
+        <div class="col-md-3">
+            <label class="small">Tanggal Laporan</label>
+            <input type="date"
+                   name="tanggal_laporan"
+                   value="{{ \Carbon\Carbon::parse($report->tanggal_laporan)->format('Y-m-d') }}"
+                   class="form-control form-control-sm">
+        </div>
 
+        {{-- CATATAN TEKNISI --}}
+        <div class="col-md-5">
+            <label class="small">Catatan Teknisi</label>
+            <textarea name="catatan_teknisi"
+                      rows="1"
+                      class="form-control form-control-sm"
+                      placeholder="Catatan teknisi">{{ $report->catatan_teknisi }}</textarea>
+        </div>
+
+        {{-- BUTTON --}}
+        <div class="col-md-2">
+            <button class="btn btn-success btn-sm w-100">Update</button>
+        </div>
     </div>
-</div>
+</form>
+
 
 {{-- MODAL FOTO --}}
 @if($report->foto)
 <div class="modal fade" id="fotoModal{{ $report->id }}" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
+    <div class="modal-content bg-dark">
       <div class="modal-body p-0">
         <img src="{{ asset('uploads/laporan/' . $report->foto) }}" class="img-fluid w-100">
       </div>

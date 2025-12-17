@@ -90,16 +90,21 @@ class ReportController extends Controller
     }
 
     // 🟢 Update status laporan
-    public function update(Request $request, Report $report)
-    {
-        $report->update([
-            'status' => $request->status,
-            'catatan_teknisi' => $request->catatan_teknisi,
-            'tanggal_selesai' => $request->status === 'Selesai' ? now() : null,
-        ]);
+   public function update(Request $request, $id)
+{
+    $report = Report::findOrFail($id);
 
-        return redirect()->route('reports.index')->with('success', '✅ Status laporan berhasil diperbarui.');
-    }
+    $report->update([
+        'status' => $request->status,
+        'tanggal_laporan' => $request->tanggal_laporan,
+        'catatan_teknisi' => $request->catatan_teknisi,
+        'tanggal_selesai' => $request->status === 'Selesai'
+            ? now()
+            : null
+    ]);
+
+    return redirect()->back()->with('success', 'Laporan berhasil diperbarui');
+}
 
     // 🟢 Hapus laporan
     public function destroy(Report $report)
@@ -117,17 +122,15 @@ class ReportController extends Controller
 
     // 🟢 Export laporan ke Excel + ikut filter
     public function export(Request $request)
-    {
-        return Excel::download(
-            new ReportsExport(
-                $request->from,
-                $request->to,
-                $request->status,
-                $request->search
-            ),
-            'laporan_masuk.xlsx'
-        );
-    }
+{
+    return Excel::download(new ReportsExport(
+        $request->from,
+        $request->to,
+        $request->status,
+        $request->search
+    ), 'laporan-helpdesk.xlsx');
+}
+
 
     // 🟢 Dashboard admin
     public function dashboard()

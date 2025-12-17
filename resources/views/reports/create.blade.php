@@ -9,7 +9,8 @@
     @csrf
 
     @if(!request()->is('admin*'))
-        <p class="text-muted">Silakan isi form berikut untuk melaporkan kendala IT Anda.</p>
+        <p class="text-white" >Silakan isi form berikut untuk melaporkan kendala IT Anda.</p>
+        
     @endif
 
     <div class="mb-3">
