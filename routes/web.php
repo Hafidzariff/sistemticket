@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\DB;
 
 // 🔹 Tampilan untuk USER (tanpa login)
 Route::get('/', [ReportController::class, 'create'])->name('home'); // alias home
@@ -23,4 +24,7 @@ Route::middleware(['admin.auth'])->prefix('admin')->group(function () {
     Route::delete('/reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
     Route::get('admin/reports/export', [ReportController::class, 'export'])->name('reports.export');
 
+});
+Route::get('/db-test', function () {
+    return DB::select('SELECT 1');
 });
